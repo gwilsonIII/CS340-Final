@@ -1,0 +1,112 @@
+DROP TABLE IF EXISTS `entity`;
+DROP TABLE IF EXISTS `ability`;
+DROP TABLE IF EXISTS `item`;
+DROP TABLE IF EXISTS `inventory`;
+DROP TABLE IF EXISTS `abil_knowledge`;
+DROP TABLE IF EXISTS `inventory_storage`;
+
+CREATE TABLE entity (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	name VARCHAR(255) NOT NULL,
+	NPC BOOLEAN NOT NULL,
+	base_health INT,
+	base_armor INT,
+	base_damage INT,
+	head INT,
+	body INT,
+	accessory INT,
+	main_hand INT,
+	off_hand INT,
+	UNIQUE (name),
+	FOREIGN KEY(head) REFERENCES item(id),
+	FOREIGN KEY(body) REFERENCES item(id),
+	FOREIGN KEY(accessory) REFERENCES item(id),
+	FOREIGN KEY(main_hand) REFERENCES item(id),
+	FOREIGN KEY(off_hand) REFERENCES item(id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE ability (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	name VARCHAR(255) NOT NULL,
+	abil_damage INT,
+	abil_desc TEXT,
+    UNIQUE(name)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE item (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	name VARCHAR(255) NOT NULL,
+	equipable BOOLEAN NOT NULL,
+	equip_slot VARCHAR(255),
+	bonus_health INT,
+	bonus_armor INT,
+	bonus_damage INT,
+	weight INT NOT NULL,
+	item_description TEXT,
+    UNIQUE(name)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+CREATE TABLE inventory (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	eid INT,
+	weight_limit INT,
+	current_weight INT,
+	FOREIGN KEY(eid) REFERENCES entity(id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+CREATE TABLE abil_knowledge (
+	eid INT,
+	aid INT,
+	FOREIGN KEY(eid) REFERENCES entity(id),
+	FOREIGN KEY(aid) REFERENCES ability(id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+CREATE TABLE inventory_storage (
+	invenid INT,
+	itemid INT,
+	quantity INT,
+	FOREIGN KEY(invenid) REFERENCES inventory(id),
+	FOREIGN KEY(itemid) REFERENCES item(id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+INSERT INTO item (name, equipable, equip_slot, bonus_armor, weight, item_description)
+VALUES ('Wooden_Helmet', '1', 'head', '2', '5', 'Just a helmet');
+
+INSERT INTO item (name, equipable, equip_slot, bonus_damage, weight, item_description)
+VALUES ('Wooden_Sword', '1', 'main_hand', '4', '4', 'A simple sword');
+
+INSERT INTO item (name, equipable, equip_slot, bonus_armor, weight, item_description)
+VALUES ('Wooden_Armor', '1', 'body', '4', '6', 'A hollowed out log');
+
+INSERT INTO item (name, equipable, equip_slot, bonus_health, weight, item_description)
+VALUES ('Wooden_Ring', '1', 'accessory', '2', '1', 'A humble ring');
+
+INSERT INTO item (name, equipable, equip_slot, bonus_armor, weight, item_description)
+VALUES ('Wooden_Shield', '1', 'off_hand', '4', '5', 'Some planks tied together');
+
+INSERT INTO item (name, equipable, weight, item_description)
+VALUES ('Small_Potion', 0, 1, 'Restores a small amount of health');
+
+INSERT INTO item (name, equipable, weight, item_description)
+VALUES ('Gold', 0, 0, 'Local currency');
+
+
+
+INSERT INTO entity (name, NPC, base_health, base_armor, base_damage, head, body, accessory, main_hand, off_hand)
+VALUES ('Mr. NPC', '1', '10', '10', '3', '1', '3', '4', '2', '5');
+
+INSERT INTO entity (name, NPC, base_health, base_armor, base_damage, head, body, accessory, main_hand, off_hand)
+VALUES ('Mr. Player', '0', '10', '10', '3', '1', '3', '4', '2', '5');
+
+
+
